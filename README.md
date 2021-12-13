@@ -52,15 +52,28 @@
 
    5. Upload our hidden_image and hidden_metadata the same way, and get unique hidden_image CID and hidden_metadata CID.
 
-   6. [HashLips NFT Contract](https://github.com/HashLips/hashlips_art_engine) Code description
+   6. [HashLips NFT Contract](https://github.com/HashLips/hashlips_nft_contract) Code description
 
       1. Change the `maxSupply` in `SimpleNft_flat.sol` to the amount of images we generated
       2. Change other variables such as `cost`, `maxMintAmount`, `paused`, `revealed`
       3. make sure the solidity compile matches the pragma
       4. make sure we are on `Injected Web3` environment
-      5. configure the Metamask and choose test net (rinkp/ganache)
-      6. make sure we choose the right contract on remix to deploy (Bear.sol) and set parameters. Note: the `_initBaseURI` should be `ipfs://{metadata CID}/`, the `_initNotRevealedUri` should be ipfs://`{hidden_metadata CID}/`
+      5. configure the Metamask and choose test net (rinkeby). Then Remember the id under the `Injected Web3` environment shown on remix, which should look like `Custom (4) network`
+      6. make sure we choose the right contract on remix to deploy (Bear.sol) and set parameters. Note:
+         1. the `_initBaseURI` should be `ipfs://{metadata CID}/`. Such as `ipfs://QmdVXTnbXPLBk5JjiXcZCyS6z42ugEh8265apaa7LACW4F/`
+         2. the `_initNotRevealedUri` should be `ipfs://{hidden_metadata CID}/hidden.json`. Such as `ipfs://QmdwkKuAkgx2CBUMGYJMp68kiJwEYU6dhcGT2KC7G71HWL/hidden.json`
       7. Before click the `transact` button, click the small `copy` icon left to it, and save the information to local .txt file. We need this information to verify the contract.
+      8. Then click the `transact` button to deploy the contract. When deployed, call the `pause` function on remix and change `pause` to `false`. Set value from `0 wei` to `cost`
+      9. Click the small `copy` button icon of `Deployed Contracts` and save the information to local .txt file.
+      10. Click the `mint`, `reveal` (show the real images rather than the hidden image) and other functions to have a try.
+      11. Then go to OpenSea. Not the normal OpenSea, but the [testnets OpenSea](https://testnets.opensea.io/) the normal OpenSea only show the items on network with `id=1` which is the main net. We can see the hidden_bear on OpenSea testnet (if the OpenSea is delayed, try refreshing).
+      
+   7. [HashLips NFT Minting Dapp](https://github.com/HashLips/hashlips_nft_minting_dapp) Code description
 
-3. 
-
+      1. Set up: run `npm i` to install the dependency
+      2. Run locally: run `npm run start`
+      3. Packup and prepare for deployment: run `npm run build`. If the website deployed on server has some failed images, change the access permission of the images.
+      4. `public/config/images`: basic assets/images
+      5. `public/config/theme.css`: global css style
+      6. `public/config/config.js`:  we need to change the configure according to our deployed contract, the `CONTRACT_ADDRESS`, `NETWORK.ID` and so on. The network id of ethereum main net is `1`, the id of polygon is `137`
+      7. `public/config/abi.json`: we need to copy our contract's abi from remix (at the bottom of compiler page, a small icon named ABI) or truffle (?) to here
