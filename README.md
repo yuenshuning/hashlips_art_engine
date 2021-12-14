@@ -1,79 +1,313 @@
-## 6.HashLips NFT
+# Welcome to HashLips 👄
 
-1. Mint an NFT for free on [Mintable.app](https://mintable.app/). Aother website called [opensea]() is more popular but it's not possible to sell for free.
+![](https://github.com/HashLips/hashlips_art_engine/blob/main/logo.png)
 
-2. How to create an NFT collection
+All the code in these repos was created and explained by HashLips on the main YouTube channel.
 
-   1. [HashLips Art Engine](https://github.com/HashLips/hashlips_art_engine) Code description
+To find out more please visit:
 
-      1. `layers/`: basic assets of image generation and fusion
+[📺 YouTube](https://www.youtube.com/channel/UC1LV4_VQGBJHTJjEWUmy8nA)
 
-      2. `src/config.js`: configuration of image generation. The `layersOrder` object describes the order of generative images (the order matters), where the values of key-value pairs <u>should correspond to</u> the folder name of `layers/` one by one
+[👄 Discord](https://discord.com/invite/qh6MWhMJDN)
 
-      3. If we want to set the rarity of layers, set the file name of layers as `xxx#weight.png`, otherwise, the weight is equal to default weight (1). See `src/main.js/getRarityWeight`
+[💬 Telegram](https://t.me/hashlipsnft)
 
-      4. If we want to run two or more different configurations at the same time, we need to grow the amount of `growEditionSizeTo`
+[🐦 Twitter](https://twitter.com/hashlipsnft)
 
-         ```js
-         const layerConfigurations = [
-           {
-             // 5 eye images
-             growEditionSizeTo: 5,
-             layersOrder: [ { name: "Background" }, { name: "Eyeball" }, { name: "Eye color" }, { name: "Iris" }, { name: "Shine" }, { name: "Bottom lid" }, { name: "Top lid" } ]
-           }, {
-             // 3 bear images
-             growEditionSizeTo: 8,
-             layersOrder: [ { name: "bear_background" }, { name: "bear_body" }, { name: "bear_clothes" }, { name: "bear_hair" } ]
-           }
-         ];
-         ```
+[ℹ️ Website](https://hashlips.online/HashLips)
 
-      5. If we want to change the image baseUri from defalut `ipfs://NewUriToReplace` to other value, change the `baseUri` in `src/config.js`
+# HashLips Art Engine 🔥
 
-      6. Customize the description of each image by changing the `description` in `src/config.js`
+![](https://github.com/HashLips/hashlips_art_engine/blob/main/banner.png)
 
-      7. Shuffle the generated images by setting the `shuffleLayerConfigurations` in `src/config.js` to `true`
+Create generative art by using the canvas api and node js. Before you use the generation engine, make sure you have node.js(v10.18.0) installed.
 
-      8. Resize the size of generated images by changing the `format` in `src/config.js`
+## Installation 🛠️
 
-      9. Setting a base color as background by setting the `background` in `src/config.js`
+If you are cloning the project then run this first, otherwise you can download the source code on the release page and skip this step.
 
-      10. Run `node index.js` to generate images according to `src/config.js` and `layers/` assets.
+```sh
+git clone https://github.com/HashLips/hashlips_art_engine.git
+```
 
-      11. Run `node utils/xxx,js` to use the utils
+Go to the root of your folder and run this command if you have yarn installed.
 
-      12. The generative images and corresponding JSON files (metadata) locate in `build/`
+```sh
+yarn install
+```
 
-   2. Metadata is neccessary, because metadata is the information of a particular image. It's in the format of JSON object. That is why we generate images with JSON files.
+Alternatively you can run this command if you have node installed.
 
-   3. Upload our generated images (JSON files cannot be uploaded) to [pinata](https://app.pinata.cloud/) ipfs hosting server, and get an unique image CID. Go to `src/config.js`, change the `baseUri` to `ipfs://{image CID}`, run `node utils/update_info.js` to <u>only</u> update the JSON files (do not re-generate images)
+```sh
+npm install
+```
 
-   4. Upload our generated JSON files to [pinata](https://app.pinata.cloud/) ipfs hosting server, and get an unique metadata CID.
+## Usage ℹ️
 
-   5. Upload our hidden_image and hidden_metadata the same way, and get unique hidden_image CID and hidden_metadata CID.
+Create your different layers as folders in the 'layers' directory, and add all the layer assets in these directories. You can name the assets anything as long as it has a rarity weight attached in the file name like so: `example element#70.png`. You can optionally change the delimiter `#` to anything you would like to use in the variable `rarityDelimiter` in the `src/config.js` file.
 
-   6. [HashLips NFT Contract](https://github.com/HashLips/hashlips_nft_contract) Code description
+Once you have all your layers, go into `src/config.js` and update the `layerConfigurations` objects `layersOrder` array to be your layer folders name in order of the back layer to the front layer.
 
-      1. Change the `maxSupply` in `SimpleNft_flat.sol` to the amount of images we generated
-      2. Change other variables such as `cost`, `maxMintAmount`, `paused`, `revealed`
-      3. make sure the solidity compile matches the pragma
-      4. make sure we are on `Injected Web3` environment
-      5. configure the Metamask and choose test net (rinkeby). Then Remember the id under the `Injected Web3` environment shown on remix, which should look like `Custom (4) network`
-      6. make sure we choose the right contract on remix to deploy (Bear.sol) and set parameters. Note:
-         1. the `_initBaseURI` should be `ipfs://{metadata CID}/`. Such as `ipfs://QmdVXTnbXPLBk5JjiXcZCyS6z42ugEh8265apaa7LACW4F/`
-         2. the `_initNotRevealedUri` should be `ipfs://{hidden_metadata CID}/hidden.json`. Such as `ipfs://QmdwkKuAkgx2CBUMGYJMp68kiJwEYU6dhcGT2KC7G71HWL/hidden.json`
-      7. Before click the `transact` button, click the small `copy` icon left to it, and save the information to local .txt file. We need this information to verify the contract.
-      8. Then click the `transact` button to deploy the contract. When deployed, call the `pause` function on remix and change `pause` to `false`. Set value from `0 wei` to `cost`
-      9. Click the small `copy` button icon of `Deployed Contracts` and save the information to local .txt file.
-      10. Click the `mint`, `reveal` (show the real images rather than the hidden image) and other functions to have a try.
-      11. Then go to OpenSea. Not the normal OpenSea, but the [testnets OpenSea](https://testnets.opensea.io/) the normal OpenSea only show the items on network with `id=1` which is the main net. We can see the hidden_bear on OpenSea testnet (if the OpenSea is delayed, try refreshing).
-      
-   7. [HashLips NFT Minting Dapp](https://github.com/HashLips/hashlips_nft_minting_dapp) Code description
+_Example:_ If you were creating a portrait design, you might have a background, then a head, a mouth, eyes, eyewear, and then headwear, so your `layersOrder` would look something like this:
 
-      1. Set up: run `npm i` to install the dependency
-      2. Run locally: run `npm run start`
-      3. Packup and prepare for deployment: run `npm run build`. If the website deployed on server has some failed images, change the access permission of the images.
-      4. `public/config/images`: basic assets/images
-      5. `public/config/theme.css`: global css style
-      6. `public/config/config.js`:  we need to change the configure according to our deployed contract, the `CONTRACT_ADDRESS`, `NETWORK.ID` and so on. The network id of ethereum main net is `1`, the id of polygon is `137`
-      7. `public/config/abi.json`: we need to copy our contract's abi from remix (at the bottom of compiler page, a small icon named ABI) or truffle (?) to here
+```js
+const layerConfigurations = [
+  {
+    growEditionSizeTo: 100,
+    layersOrder: [
+      { name: "Head" },
+      { name: "Mouth" },
+      { name: "Eyes" },
+      { name: "Eyeswear" },
+      { name: "Headwear" },
+    ],
+  },
+];
+```
+
+The `name` of each layer object represents the name of the folder (in `/layers/`) that the images reside in.
+
+Optionally you can now add multiple different `layerConfigurations` to your collection. Each configuration can be unique and have different layer orders, use the same layers or introduce new ones. This gives the artist flexibility when it comes to fine tuning their collections to their needs.
+
+_Example:_ If you were creating a portrait design, you might have a background, then a head, a mouth, eyes, eyewear, and then headwear and you want to create a new race or just simple re-order the layers or even introduce new layers, then you're `layerConfigurations` and `layersOrder` would look something like this:
+
+```js
+const layerConfigurations = [
+  {
+    // Creates up to 50 artworks
+    growEditionSizeTo: 50,
+    layersOrder: [
+      { name: "Background" },
+      { name: "Head" },
+      { name: "Mouth" },
+      { name: "Eyes" },
+      { name: "Eyeswear" },
+      { name: "Headwear" },
+    ],
+  },
+  {
+    // Creates an additional 100 artworks
+    growEditionSizeTo: 150,
+    layersOrder: [
+      { name: "Background" },
+      { name: "Head" },
+      { name: "Eyes" },
+      { name: "Mouth" },
+      { name: "Eyeswear" },
+      { name: "Headwear" },
+      { name: "AlienHeadwear" },
+    ],
+  },
+];
+```
+
+Update your `format` size, ie the outputted image size, and the `growEditionSizeTo` on each `layerConfigurations` object, which is the amount of variation outputted.
+
+You can mix up the `layerConfigurations` order on how the images are saved by setting the variable `shuffleLayerConfigurations` in the `config.js` file to true. It is false by default and will save all images in numerical order.
+
+If you want to have logs to debug and see what is happening when you generate images you can set the variable `debugLogs` in the `config.js` file to true. It is false by default, so you will only see general logs.
+
+If you want to play around with different blending modes, you can add a `blend: MODE.colorBurn` field to the layersOrder `options` object.
+
+If you need a layers to have a different opacity then you can add the `opacity: 0.7` field to the layersOrder `options` object as well.
+
+If you want to have a layer _ignored_ in the DNA uniqueness check, you can set `bypassDNA: true` in the `options` object. This has the effect of making sure the rest of the traits are unique while not considering the `Background` Layers as traits, for example. The layers _are_ included in the final image.
+
+To use a different metadata attribute name you can add the `displayName: "Awesome Eye Color"` to the `options` object. All options are optional and can be addes on the same layer if you want to.
+
+Here is an example on how you can play around with both filter fields:
+
+```js
+const layerConfigurations = [
+  {
+    growEditionSizeTo: 5,
+    layersOrder: [
+      { name: "Background" , {
+        options: {
+          bypassDNA: false;
+        }
+      }},
+      { name: "Eyeball" },
+      {
+        name: "Eye color",
+        options: {
+          blend: MODE.destinationIn,
+          opacity: 0.2,
+          displayName: "Awesome Eye Color",
+        },
+      },
+      { name: "Iris" },
+      { name: "Shine" },
+      { name: "Bottom lid", options: { blend: MODE.overlay, opacity: 0.7 } },
+      { name: "Top lid" },
+    ],
+  },
+];
+```
+
+Here is a list of the different blending modes that you can optionally use.
+
+```js
+const MODE = {
+  sourceOver: "source-over",
+  sourceIn: "source-in",
+  sourceOut: "source-out",
+  sourceAtop: "source-out",
+  destinationOver: "destination-over",
+  destinationIn: "destination-in",
+  destinationOut: "destination-out",
+  destinationAtop: "destination-atop",
+  lighter: "lighter",
+  copy: "copy",
+  xor: "xor",
+  multiply: "multiply",
+  screen: "screen",
+  overlay: "overlay",
+  darken: "darken",
+  lighten: "lighten",
+  colorDodge: "color-dodge",
+  colorBurn: "color-burn",
+  hardLight: "hard-light",
+  softLight: "soft-light",
+  difference: "difference",
+  exclusion: "exclusion",
+  hue: "hue",
+  saturation: "saturation",
+  color: "color",
+  luminosity: "luminosity",
+};
+```
+
+When you are ready, run the following command and your outputted art will be in the `build/images` directory and the json in the `build/json` directory:
+
+```sh
+npm run build
+```
+
+or
+
+```sh
+node index.js
+```
+
+The program will output all the images in the `build/images` directory along with the metadata files in the `build/json` directory. Each collection will have a `_metadata.json` file that consists of all the metadata in the collection inside the `build/json` directory. The `build/json` folder also will contain all the single json files that represent each image file. The single json file of a image will look something like this:
+
+```json
+{
+  "dna": "d956cdf4e460508b5ff90c21974124f68d6edc34",
+  "name": "#1",
+  "description": "This is the description of your NFT project",
+  "image": "https://hashlips/nft/1.png",
+  "edition": 1,
+  "date": 1731990799975,
+  "attributes": [
+    { "trait_type": "Background", "value": "Black" },
+    { "trait_type": "Eyeball", "value": "Red" },
+    { "trait_type": "Eye color", "value": "Yellow" },
+    { "trait_type": "Iris", "value": "Small" },
+    { "trait_type": "Shine", "value": "Shapes" },
+    { "trait_type": "Bottom lid", "value": "Low" },
+    { "trait_type": "Top lid", "value": "Middle" }
+  ],
+  "compiler": "HashLips Art Engine"
+}
+```
+
+You can also add extra metadata to each metadata file by adding your extra items, (key: value) pairs to the `extraMetadata` object variable in the `config.js` file.
+
+```js
+const extraMetadata = {
+  creator: "Daniel Eugene Botha",
+};
+```
+
+If you don't need extra metadata, simply leave the object empty. It is empty by default.
+
+```js
+const extraMetadata = {};
+```
+
+That's it, you're done.
+
+## Utils
+
+### Updating baseUri for IPFS and description
+
+You might possibly want to update the baseUri and description after you have ran your collection. To update the baseUri and description simply run:
+
+```sh
+npm run update_info
+```
+
+### Generate a preview image
+
+Create a preview image collage of your collection, run:
+
+```sh
+npm run preview
+```
+
+### Generate pixelated images from collection
+
+In order to convert images into pixelated images you would need a list of images that you want to convert. So run the generator first.
+
+Then simply run this command:
+
+```sh
+npm run pixelate
+```
+
+All your images will be outputted in the `/build/pixel_images` directory.
+If you want to change the ratio of the pixelation then you can update the ratio property on the `pixelFormat` object in the `src/config.js` file. The lower the number on the left, the more pixelated the image will be.
+
+```js
+const pixelFormat = {
+  ratio: 5 / 128,
+};
+```
+
+### Generate GIF images from collection
+
+In order to export gifs based on the layers created, you just need to set the export on the `gif` object in the `src/config.js` file to `true`. You can also play around with the `repeat`, `quality` and the `delay` of the exported gif.
+
+Setting the `repeat: -1` will produce a one time render and `repeat: 0` will loop forever.
+
+```js
+const gif = {
+  export: true,
+  repeat: 0,
+  quality: 100,
+  delay: 500,
+};
+```
+
+### Printing rarity data (Experimental feature)
+
+To see the percentages of each attribute across your collection, run:
+
+```sh
+npm run rarity
+```
+
+The output will look something like this:
+
+```sh
+Trait type: Top lid
+{
+  trait: 'High',
+  chance: '30',
+  occurrence: '3 in 20 editions (15.00 %)'
+}
+{
+  trait: 'Low',
+  chance: '20',
+  occurrence: '3 in 20 editions (15.00 %)'
+}
+{
+  trait: 'Middle',
+  chance: '50',
+  occurrence: '14 in 20 editions (70.00 %)'
+}
+```
+
+Hope you create some awesome artworks with this code 👄
